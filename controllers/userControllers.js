@@ -38,7 +38,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (savedUser) {
     res.status(201).json({
       success: true,
-      user: savedUser,
+      savedUser,
       token: generateToken(savedUser._id),
     });
   } else {
