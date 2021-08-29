@@ -33,12 +33,19 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   const savedUser = await newUser.save();
-  savedUser.password = undefined;
 
   if (savedUser) {
     res.status(201).json({
       success: true,
-      savedUser,
+      name: savedUser.name,
+      email: savedUser.email,
+      userName: savedUser._iduserName,
+      avatarImage: "",
+      coverImage: "",
+      bio: "",
+      website: "",
+      followers: [],
+      following: [],
       token: generateToken(savedUser._id),
     });
   } else {
