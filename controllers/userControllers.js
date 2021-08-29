@@ -33,7 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   const savedUser = await newUser.save();
-  saveUser.password = undefined;
+  savedUser.password = undefined;
 
   if (savedUser) {
     res.status(201).json({
