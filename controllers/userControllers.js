@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
       success: true,
       name: savedUser.name,
       email: savedUser.email,
-      userName: savedUser._iduserName,
+      userName: savedUser.userName,
       avatarImage: "",
       coverImage: "",
       bio: "",
