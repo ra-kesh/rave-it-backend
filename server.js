@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import userRoutes from "./routes/userRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 import {
   errorHandlerMiddleware,
@@ -28,18 +30,20 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.send("it's my api..bitch");
+  res.send("revvit");
 });
 
 // routes
-app.use("/api/users", userRoutes);
+app.use("/users", userRoutes);
+app.use("/posts", postRoutes);
+app.use("/notifications", notificationRoutes);
 
 // error Handellers
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 // port
-const port = process.env.PORT || 800;
+const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
   console.log(`server is running on ${port}`);

@@ -1,25 +1,61 @@
 import mongoose from "mongoose";
+const { Schema } = mongoose;
 import bcrypt from "bcryptjs";
 
-const userSchema = mongoose.Schema(
+const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: "Name cannot be blank",
+      minLength: [2, "Name should be atleast 2 character long"],
     },
     email: {
       type: String,
-      required: true,
       unique: true,
+      required: "Valid email address required",
+    },
+    userName: {
+      type: String,
+      unique: true,
+      required: "Username required",
+      minLength: [2, "Username should be atleast 2 character long"],
     },
     password: {
       type: String,
-      required: true,
+      required: "vaild password required",
+      minLength: [6, "Password should be atleast 6 character long"],
     },
-    isAdmin: {
-      type: Boolean,
-      required: true,
-      default: false,
+    avatarImage: {
+      type: String,
+    },
+    coverImage: {
+      type: String,
+    },
+    bio: {
+      type: String,
+    },
+    website: {
+      type: String,
+    },
+    followers: {
+      type: [
+        {
+          userId: { type: Schema.Types.ObjectId, ref: "User" },
+          userName: String,
+          profileImg: String,
+          name: String,
+        },
+      ],
+    },
+    following: {
+      type: [
+        {
+          userId: { type: Schema.Types.ObjectId, ref: "User" },
+          userName: String,
+          profileImg: String,
+          name: String,
+        },
+      ],
     },
   },
   {
