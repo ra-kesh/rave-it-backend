@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
+import { extend } from "lodash";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, userName, password } = req.body;
@@ -102,19 +103,10 @@ const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const { avatarImage, coverImage, bio, website, name, userName } = req.body;
   const { _id } = req.params;
-
-  const user = await User.findById(_id).select(
-    "-__v -createdAt -updatedAt -password"
-  );
-
-  user.avatarImage = avatarImage;
-  user.coverImage = coverImage;
-  user.bio = bio;
-  user.website = website;
-  user.name = name;
-  user.userName = userName;
+  const user = await User.findById(_id).select("-__v -createdAt -updatedAt");
+  const updatedUser = req.body;
+  user = extend(user, updatedUser);
   user = await user.save();
   res.json({
     success: true,
@@ -122,6 +114,28 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user,
   });
 });
+
+// const updateUserProfile = asyncHandler(async (req, res) => {
+//   const { avatarImage, coverImage, bio, website, name } = req.body;
+//   const { _id } = req.params;
+
+//   const user = await User.findById(_id).select(
+//     "-__v -createdAt -updatedAt -password"
+//   );
+
+//   user.avatarImage = avatarImage;
+//   user.coverImage = coverImage;
+//   user.bio = bio;
+//   user.website = website;
+//   user.name = name;
+//   user = await user.save();
+
+//   res.json({
+//     success: true,
+//     message: "User updated successfully",
+//     user,
+//   });
+// });
 
 // todo : to be refactored properly
 
