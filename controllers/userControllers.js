@@ -59,7 +59,7 @@ const registerUser = asyncHandler(async (req, res) => {
       website: "",
       followers: [],
       following: [],
-      token: generateToken(savedUser._id),
+      token: generateToken(user._id),
     });
   } else {
     res.status(400);
