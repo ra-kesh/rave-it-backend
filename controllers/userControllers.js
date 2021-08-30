@@ -105,8 +105,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 const updateUserProfile = asyncHandler(async (req, res) => {
   const { _id } = req.params;
-  const user = await User.findById(_id).select("-__v -createdAt -updatedAt");
-  const updatedUser = req.body;
+  let user = await User.findById(_id).select("-__v -createdAt -updatedAt");
+  let updatedUser = req.body;
   user = extend(user, updatedUser);
   user = await user.save();
   res.json({
