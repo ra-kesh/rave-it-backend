@@ -19,11 +19,11 @@ const registerUser = asyncHandler(async (req, res) => {
       message: "userName already taken.Try with different userName",
     });
   }
-  const newUser = new User({
-    name: name,
-    email: email,
-    password: password,
-    userName: userName,
+  const user = await User.create({
+    name,
+    email,
+    password,
+    userName,
     avatarImage: "",
     coverImage: "",
     bio: "",
@@ -31,15 +31,28 @@ const registerUser = asyncHandler(async (req, res) => {
     followers: [],
     following: [],
   });
+  // const newUser = new User({
+  //   name: name,
+  //   email: email,
+  //   password: password,
+  //   userName: userName,
+  //   avatarImage: "",
+  //   coverImage: "",
+  //   bio: "",
+  //   website: "",
+  //   followers: [],
+  //   following: [],
+  // });
 
-  const savedUser = await newUser.save();
+  // const savedUser = await newUser.save();
 
-  if (savedUser) {
+  if (user) {
     res.status(201).json({
       success: true,
-      name: savedUser.name,
-      email: savedUser.email,
-      userName: savedUser.userName,
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      userName: user.userName,
       avatarImage: "",
       coverImage: "",
       bio: "",
