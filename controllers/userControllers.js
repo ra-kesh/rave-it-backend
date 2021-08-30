@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (savedUser) {
     res.status(201).json({
       success: true,
-      user: savedUser,
+      user: savedUser.select(-password),
       token: generateToken(savedUser._id),
     });
   } else {
