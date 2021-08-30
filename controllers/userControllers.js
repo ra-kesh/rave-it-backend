@@ -11,15 +11,11 @@ const registerUser = asyncHandler(async (req, res) => {
   const usernameExists = await User.findOne({ userName });
 
   if (emailExists) {
-    return res.status(400).json({
-      success: false,
-      message: "Email already present.Try with different email Id",
-    });
+    res.status(400);
+    throw new Error("Email already present.Try with different email Id");
   } else if (usernameExists) {
-    return res.status(400).json({
-      success: false,
-      message: "userName already taken.Try with different userName",
-    });
+    res.status(400);
+    throw new Error("userName already taken.Try with different userName");
   }
 
   const newUser = new User({
@@ -36,11 +32,18 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   const savedUser = await newUser.save();
-  savedUser.password = undefined;
 
   if (savedUser) {
     res.status(201).json({
-      savedUser,
+      name: savedUser.name,
+      email: savedUser.email,
+      userName: savedUser.userName,
+      avatarImage: savedUser.avatarImage,
+      coverImage: savedUser.coverImage,
+      bio: savedUser.bio,
+      website: savedUser.website,
+      followers: savedUser.followers,
+      following: savedUser.following,
       token: generateToken(savedUser._id),
     });
   } else {
@@ -55,12 +58,17 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
-    user.password = undefined;
-
     res.status(200).json({
-      success: true,
-      data: { user, token: generateToken(user._id) },
-      message: "login successful",
+      name: user.name,
+      email: user.email,
+      userName: user.userName,
+      avatarImage: user.avatarImage,
+      coverImage: user.coverImage,
+      bio: user.bio,
+      website: user.website,
+      followers: user.followers,
+      following: user.following,
+      token: generateToken(user._id),
     });
   } else {
     res.status(401);
@@ -79,7 +87,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
   });
 
   res.status(200).json({
-    success: true,
     totalUsers: userList.length,
     users: userList,
   });
@@ -92,8 +99,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
   if (user) {
     res.json({
-      success: true,
-      message: "User retrieved successfully",
+      // success: true,
+      // message: "User retrieved successfully",
       user,
     });
   } else {
@@ -111,8 +118,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   user = extend(user, updatedUser);
   user = await user.save();
   res.json({
-    success: true,
-    message: "User updated successfully",
+    // success: true,
+    // message: "User updated successfully",
     user,
   });
 });
