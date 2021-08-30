@@ -1,7 +1,8 @@
 import User from "../models/userModel.js";
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
-const { extend } = require("lodash");
+import pkg from "lodash";
+const { extend } = pkg;
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, userName, password } = req.body;
