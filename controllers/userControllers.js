@@ -74,7 +74,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
   }
 
   userList.forEach((user) => {
-    user.password = null;
+    user.password = undefined;
   });
 
   res.status(200).json({
@@ -85,7 +85,9 @@ const getAllUsers = asyncHandler(async (req, res) => {
 });
 const getUserProfile = asyncHandler(async (req, res) => {
   const { _id } = req.params;
-  const user = await User.findById(_id).select("-__v -createdAt -updatedAt");
+  const user = await User.findById(_id).select(
+    "-__v -createdAt -updatedAt -password"
+  );
 
   if (user) {
     res.json({
@@ -103,7 +105,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   const { avatarImage, coverImage, bio, website, name, userName } = req.body;
   const { _id } = req.params;
 
-  const user = await User.findById(_id).select("-__v -createdAt -updatedAt");
+  const user = await User.findById(_id).select(
+    "-__v -createdAt -updatedAt -password"
+  );
 
   user.avatarImage = avatarImage;
   user.coverImage = coverImage;
