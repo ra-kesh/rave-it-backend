@@ -58,8 +58,9 @@ const loginUser = asyncHandler(async (req, res) => {
     user.password = undefined;
 
     res.status(200).json({
-      user,
-      token: generateToken(user._id),
+      success: true,
+      data: { user, token: generateToken(user._id) },
+      message: "login successful",
     });
   } else {
     res.status(401);
