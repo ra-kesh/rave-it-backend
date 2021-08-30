@@ -34,12 +34,12 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   const savedUser = await newUser.save();
-  savedUser.password = null;
+  savedUser.password = undefined;
 
   if (savedUser) {
     res.status(201).json({
       success: true,
-      user: savedUser.select(-password),
+      user: savedUser,
       token: generateToken(savedUser._id),
     });
   } else {
@@ -54,6 +54,8 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
+    user.password = undefined;
+
     res.status(200).json({
       success: true,
       user: user,
