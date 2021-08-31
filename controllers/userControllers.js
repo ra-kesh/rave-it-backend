@@ -71,9 +71,8 @@ const loginUser = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(401).json({
-      errorMessage: "Invalid email or password",
-    });
+    res.status(401);
+    throw new Error("Invalid email or password");
   }
 });
 
@@ -92,6 +91,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
     users: userList,
   });
 });
+
 const getUserProfile = asyncHandler(async (req, res) => {
   const { _id } = req.params;
   const user = await User.findById(_id).select(

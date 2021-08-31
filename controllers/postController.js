@@ -1,52 +1,34 @@
 import Post from "../models/postModel.js";
+import asyncHandler from "express-async-handler";
 
 // todo : to be refactored properly
 
-const getAllPosts = async (req, res) => {
-  try {
-    const posts = await Post.find({});
-    if (!posts) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No posts found. Sorry!" });
-    }
-    res.status(200).json({ success: true, posts: posts });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Couldn't retrieve data. Sorry!" });
+const getAllPosts = asyncHandler(async (req, res) => {
+  const posts = await Post.find({});
+  if (!posts) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Couldnot found any posts" });
   }
-};
+  res.status(200).json({ success: true, posts });
+});
 
-const addPost = async (req, res) => {
-  const { userName, name, avatarImage, content } = req.body;
-  const { userId } = req;
+const addPost = asyncHandler(async (req, res) => {
+  const { postedBy, content } = req.body;
 
-  try {
-    const newPost = new Post({
-      userId,
-      userName,
-      name,
-      avatarImage,
-      content,
-      likes: [],
-      comments: [],
-      reposts: [],
-    });
-    const savePost = await newPost.save();
-    res.status(201).json({ success: true, post: savePost });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Couldn't compose post. Sorry!" });
-  }
-};
+  const newPost = new Post({
+    postedBy,
+    content,
+    likes: [],
+    comments: [],
+  });
+
+  const savePost = await newPost.save();
+  res.status(201).json({ success: true, post: savePost });
+});
 
 const removePost = async (req, res) => {
   const { postId } = req.body;
-  const { userId } = req;
 
   try {
     const foundPost = await Post.findById(postId);

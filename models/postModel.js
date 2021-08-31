@@ -3,21 +3,9 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema(
   {
-    userId: {
+    postedBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
-    },
-    userName: {
-      type: String,
-      required: true,
-    },
-    avatarImage: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
     },
     content: {
       type: String,
