@@ -18,11 +18,9 @@ import { protect } from "../middlewares/authMiddleWare.js";
 router.route("/");
 router.param("postId", findPostById);
 
-router
-  .route("/")
-  .get(getAllPosts)
-  .post(protect, addPost)
-  .delete(protect, removePost);
+router.route("/").get(getAllPosts);
+
+router.route("/:_id").post(protect, addPost).delete(protect, removePost);
 
 router
   .route("/:postId/like")
