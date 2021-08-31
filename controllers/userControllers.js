@@ -35,6 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (savedUser) {
     res.status(201).json({
+      _id: savedUser._id,
       name: savedUser.name,
       email: savedUser.email,
       userName: savedUser.userName,
@@ -59,6 +60,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (user && (await user.matchPassword(password))) {
     res.status(200).json({
+      _id: user._id,
       name: user.name,
       email: user.email,
       userName: user.userName,
