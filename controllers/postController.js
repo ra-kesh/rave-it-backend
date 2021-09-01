@@ -75,6 +75,8 @@ const removeLike = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, post: post });
 });
 
+// todo: change post model before this
+
 const addComment = async (req, res) => {
   const { userName, name, avatarImage, text } = req.body;
   const { post } = req;
