@@ -15,7 +15,7 @@ import {
 
 import { protect } from "../middlewares/authMiddleWare.js";
 
-router.route("/");
+// router.route("/")
 router.param("postId", findPostById);
 
 router

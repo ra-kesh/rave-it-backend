@@ -59,51 +59,21 @@ const findPostById = async (req, res, next, postId) => {
   }
 };
 
-// const updateLike = asyncHandler(async (req, res) => {
-//   const { userId } = req.body;
-//   const { post } = req;
-//   post.likes.push({ userId: userId });
-//   post.save();
-//   res.status(201).json({ success: true, post: post });
-// });
-// const updateLike = asyncHandler(async (req, res) => {
-//   let { post } = req;
-//   const { userId } = req.body;
-
-//   if (post.likes.includes(userId)) {
-//     await post.updateOne({ $pull: { likes: userId } });
-//     const updatedPost = await Post.findById(post._id);
-//     res.status(200).json({ success: true, post: updatedPost });
-//   } else {
-//     await post.updateOne({ $push: { likes: userId } });
-//     const updatedPost = await Post.findById(post._id);
-//     res.status(201).json({ success: true, post: updatedPost });
-//   }
-// });
 const updateLike = asyncHandler(async (req, res) => {
-  let { post } = req;
-  let currentUser = req.body.userId;
-  await post.updateOne({ $push: { likes: currentUser } });
-  const updatedPost = await Post.findById(post._id);
-  res.status(201).json({ success: true, post: updatedPost });
+  const { userId } = req.body;
+  const { post } = req;
+  post.likes.push({ userId: userId });
+  post.save();
+  res.status(201).json({ success: true, post: post });
 });
 
 const removeLike = asyncHandler(async (req, res) => {
-  let { post } = req;
-  let currentUser = req.body.userId;
-  if (post.likes.includes(currentUser)) {
-    await post.updateOne({ $pull: { likes: currentUser } });
-    const updatedPost = await Post.findById(post._id);
-    res.status(200).json({ success: true, post: updatedPost });
-  }
+  const { userId } = req.body;
+  const { post } = req;
+  post.likes = post.likes.filter((item) => item.userId !== userId);
+  post.save();
+  res.status(200).json({ success: true, post: post });
 });
-// const removeLike = asyncHandler(async (req, res) => {
-//   const { userId } = req.body;
-//   const { post } = req;
-//   post.likes = post.likes.filter((item) => item.userId !== userId);
-//   post.save();
-//   res.status(200).json({ success: true, post: post });
-// });
 
 // todo: change post model before this
 
