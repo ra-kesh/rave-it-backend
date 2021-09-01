@@ -82,17 +82,17 @@ const findPostById = async (req, res, next, postId) => {
 // });
 const updateLike = asyncHandler(async (req, res) => {
   let { post } = req;
-  const { userId } = req.body;
-  await post.updateOne({ $push: { likes: userId } });
+  let currentUser = req.body.userId;
+  await post.updateOne({ $push: { likes: currentUser } });
   const updatedPost = await Post.findById(post._id);
   res.status(201).json({ success: true, post: updatedPost });
 });
 
 const removeLike = asyncHandler(async (req, res) => {
   let { post } = req;
-  const { userId } = req.body;
-  if (post.likes.includes(userId)) {
-    await post.updateOne({ $pull: { likes: userId } });
+  let currentUser = req.body.userId;
+  if (post.likes.includes(currentUser)) {
+    await post.updateOne({ $pull: { likes: currentUser } });
     const updatedPost = await Post.findById(post._id);
     res.status(200).json({ success: true, post: updatedPost });
   }
