@@ -79,13 +79,15 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const getAllUsers = asyncHandler(async (req, res) => {
-  const userList = await User.find({}).select("-__v -createdAt -updatedAt");
+  const userList = await User.find({});
   if (!userList) {
     res.status(404).json({ success: false, message: "No users found. Sorry!" });
   }
 
   userList.forEach((user) => {
     user.password = undefined;
+    user.__v = undefined;
+    user.updatedAt = undefined;
   });
 
   res.status(200).json({

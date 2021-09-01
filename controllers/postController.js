@@ -27,26 +27,19 @@ const addPost = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, post: savePost });
 });
 
-const removePost = async (req, res) => {
+const removePost = asyncHandler(async (req, res) => {
   const { postId } = req.body;
+  const foundPost = await Post.findById(postId);
 
-  try {
-    const foundPost = await Post.findById(postId);
-    if (!foundPost) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Post not found. Sorry!" });
-    } else {
-      foundPost.remove();
-      res.status(200).json({ success: true, removedPost: foundPost });
-    }
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Couldn't retrieve data. Sorry!" });
+  if (!foundPost) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Post not found. Sorry!" });
+  } else {
+    foundPost.remove();
+    res.status(200).json({ success: true, removedPost: foundPost });
   }
-};
+});
 
 const findPostById = async (req, res, next, postId) => {
   try {
@@ -66,35 +59,21 @@ const findPostById = async (req, res, next, postId) => {
   }
 };
 
-const updateLike = async (req, res) => {
-  const { userName } = req.body;
+const updateLike = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
   const { post } = req;
-  try {
-    post.likes.push({ userName: userName });
-    post.save();
-    res.status(201).json({ success: true, post: post });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Couldn't retrieve data. Sorry!" });
-  }
-};
+  post.likes.push({ userId: userId });
+  post.save();
+  res.status(201).json({ success: true, post: post });
+});
 
-const removeLike = async (req, res) => {
-  const { userName } = req.body;
+const removeLike = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
   const { post } = req;
-  try {
-    post.likes = post.likes.filter((item) => item.userName !== userName);
-    post.save();
-    res.status(200).json({ success: true, post: post });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Couldn't retrieve data. Sorry!" });
-  }
-};
+  post.likes = post.likes.filter((item) => item.userId !== userId);
+  post.save();
+  res.status(200).json({ success: true, post: post });
+});
 
 const addComment = async (req, res) => {
   const { userName, name, avatarImage, text } = req.body;
