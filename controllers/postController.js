@@ -69,6 +69,7 @@ const updateLike = asyncHandler(async (req, res) => {
 
 const removeLike = asyncHandler(async (req, res) => {
   const { userId } = req.body;
+  console.log(userId);
   const { post } = req;
   post.likes = post.likes.filter((item) => item.userId.toString() !== userId);
   await post.save();
