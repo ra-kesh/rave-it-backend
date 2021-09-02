@@ -69,56 +69,41 @@ const updateLike = asyncHandler(async (req, res) => {
 
 const removeLike = asyncHandler(async (req, res) => {
   const { userId } = req.body;
-  console.log(userId);
   const { post } = req;
   post.likes = post.likes.filter((item) => item.userId.toString() !== userId);
   await post.save();
   res.status(200).json({ success: true, post: post });
 });
 
-// todo: change post model before this
-
-const addComment = async (req, res) => {
-  const { userName, name, avatarImage, text } = req.body;
+const addComment = asyncHandler(async (req, res) => {
+  const { userId, text } = req.body;
   const { post } = req;
-  try {
-    post.comments.push({
-      userName,
-      name,
-      avatarImage,
-      text,
-      createdAt: new Date().toISOString(),
-    });
-    post.save();
-    res.status(201).json({ success: true, post: post });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Couldn't retrieve data. Sorry!" });
-  }
-};
+  post.comments.push({
+    userId,
+    text,
+    createdAt: new Date().toISOString(),
+  });
+  post.save();
+  res.status(201).json({ success: true, post: post });
+});
 
-const removeComment = async (req, res) => {
+const removeComment = asyncHandler(async (req, res) => {
   const { commentId } = req.body;
   const { post } = req;
-  try {
-    const foundComment = post.comments.find((item) => item._id == commentId);
-    if (!foundComment) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Comment not found. Sorry!" });
-    }
-    post.comments = post.comments.filter((item) => item._id != commentId);
-    post.save();
-    res.status(200).json({ success: true, post: post });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Couldn't retrieve data. Sorry!" });
+  const foundComment = post.comments.find(
+    (item) => item._id.toString() === commentId
+  );
+  if (!foundComment) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Comment not found. Sorry!" });
   }
-};
+  post.comments = post.comments.filter(
+    (item) => item._id.toString() !== commentId
+  );
+  post.save();
+  res.status(200).json({ success: true, post: post });
+});
 
 export {
   getAllPosts,

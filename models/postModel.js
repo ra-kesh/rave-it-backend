@@ -18,9 +18,7 @@ const postSchema = new Schema(
     ],
     comments: [
       {
-        userName: String,
-        name: String,
-        profileImg: String,
+        userId: Schema.Types.ObjectId,
         text: String,
         createdAt: Date,
       },
