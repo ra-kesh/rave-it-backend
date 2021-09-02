@@ -37,26 +37,16 @@ const userSchema = new Schema(
     website: {
       type: String,
     },
-    followers: {
-      type: [
-        {
-          userId: { type: Schema.Types.ObjectId, ref: "User" },
-          userName: String,
-          profileImg: String,
-          name: String,
-        },
-      ],
-    },
-    following: {
-      type: [
-        {
-          userId: { type: Schema.Types.ObjectId, ref: "User" },
-          userName: String,
-          profileImg: String,
-          name: String,
-        },
-      ],
-    },
+    followers: [
+      {
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
+      },
+    ],
+    following: [
+      {
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
+      },
+    ],
   },
   {
     timestamps: true,
