@@ -71,7 +71,7 @@ const removeLike = asyncHandler(async (req, res) => {
   const { userId } = req.body;
   const { post } = req;
   post.likes = post.likes.filter((item) => item.userId !== userId);
-  post.save();
+  await post.save();
   res.status(200).json({ success: true, post: post });
 });
 
