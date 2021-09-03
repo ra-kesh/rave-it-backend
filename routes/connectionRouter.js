@@ -7,10 +7,11 @@ import {
 
 const router = express.Router();
 
-router.get("/", getAllConnections);
+import { protect } from "./middlewares/authMiddleWare.js";
+router.get("/", protect, getAllConnections);
 
-router.post("/follow", FollowUser);
+router.post("/follow", protect, FollowUser);
 
-router.post("/unfollow", unFollowUser);
+router.post("/unfollow", protect, unFollowUser);
 
 export default router;
