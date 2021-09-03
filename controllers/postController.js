@@ -41,23 +41,16 @@ const removePost = asyncHandler(async (req, res) => {
   }
 });
 
-const findPostById = async (req, res, next, postId) => {
-  try {
-    const foundPost = await Post.findById(postId);
-    if (!foundPost) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Post not found. Sorry!" });
-    }
-    req.post = foundPost;
-    next();
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Something went wrong. Sorry!" });
+const findPostById = asyncHandler(async (req, res, next, postId) => {
+  const foundPost = await Post.findById(postId);
+  if (!foundPost) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Post not found. Sorry!" });
   }
-};
+  req.post = foundPost;
+  next();
+});
 
 const updateLike = asyncHandler(async (req, res) => {
   const { userId } = req.body;

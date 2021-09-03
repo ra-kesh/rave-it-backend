@@ -129,13 +129,24 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   });
 });
 
+const findUserById = asyncHandler(async (req, res, next, userId) => {
+  const foundUser = await User.findById(userId);
+  if (!foundUser) {
+    return res
+      .status(404)
+      .json({ success: false, message: "User not found. Sorry!" });
+  }
+  req.user = foundUser;
+  next();
+});
+
 // todo : to be refactored properly
 
 const followUser = asyncHandler(async (req, res) => {
   const { userIdToFollow } = req.body;
-  const { userId } = req;
+  const { user } = req;
   let userToFollow = await User.findById(userIdToFollow);
-  let user = await User.findById(userId);
+  // let user = await User.findById(userId);
   if (!userToFollow || !user) {
     return res.status(400).json({ success: false, message: "Users not found" });
   }
@@ -224,4 +235,5 @@ export {
   followUser,
   unfollowUser,
   searchByUserName,
+  findUserById,
 };
