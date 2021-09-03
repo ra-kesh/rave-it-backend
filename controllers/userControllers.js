@@ -131,46 +131,37 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 // todo : to be refactored properly
 
-const followUser = async (req, res) => {
+const followUser = asyncHandler(async (req, res) => {
   const { userIdToFollow } = req.body;
   const { userId } = req;
-  try {
-    let userToFollow = await User.findById(userIdToFollow);
-    let user = await User.findById(userId);
-    if (!userToFollow || !user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Users not found" });
-    }
-    const newFollower = {
-      userId: user._id,
-      userName: user.userName,
-      avatarImage: user.avatarImage,
-      name: user.name,
-    };
-    const newFollowing = {
-      userId: userToFollow._id,
-      userName: userToFollow.userName,
-      avatarImage: userToFollow.avatarImage,
-      name: userToFollow.name,
-    };
-
-    user.following.push(newFollowing);
-    userToFollow.followers.push(newFollower);
-
-    user = await user.save();
-    userToFollow = await userToFollow.save();
-
-    res
-      .status(201)
-      .json({ success: true, user: user, userToFollow: userToFollow });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Couldn't retrieve data. Sorry!" });
+  let userToFollow = await User.findById(userIdToFollow);
+  let user = await User.findById(userId);
+  if (!userToFollow || !user) {
+    return res.status(400).json({ success: false, message: "Users not found" });
   }
-};
+  // const newFollower = {
+  //   userId: user._id,
+  //   userName: user.userName,
+  //   avatarImage: user.avatarImage,
+  //   name: user.name,
+  // };
+  // const newFollowing = {
+  //   userId: userToFollow._id,
+  //   userName: userToFollow.userName,
+  //   avatarImage: userToFollow.avatarImage,
+  //   name: userToFollow.name,
+  // };
+
+  user.following.push(userIdToFollow);
+  userToFollow.followers.push(userId);
+
+  user = await user.save();
+  userToFollow = await userToFollow.save();
+
+  res
+    .status(201)
+    .json({ success: true, user: user, userToFollow: userToFollow });
+});
 
 const unfollowUser = async (req, res) => {
   const { userIdToUnFollow } = req.body;
