@@ -145,27 +145,19 @@ const findUserById = asyncHandler(async (req, res, next, userId) => {
 const followUser = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const { userIdToFollow } = req.body;
-  // const { user } = req;
-  let userToFollow = await User.findById(userIdToFollow);
-  let user = await User.findById(userId);
+
+  let userToFollow = await User.findById(userIdToFollow).select(
+    "-__v -createdAt -updatedAt -password"
+  );
+  let user = await User.findById(userId).select(
+    "-__v -createdAt -updatedAt -password"
+  );
   if (!userToFollow || !user) {
     return res.status(400).json({ success: false, message: "Users not found" });
   }
-  // const newFollower = {
-  //   userId: user._id,
-  //   userName: user.userName,
-  //   avatarImage: user.avatarImage,
-  //   name: user.name,
-  // };
-  // const newFollowing = {
-  //   userId: userToFollow._id,
-  //   userName: userToFollow.userName,
-  //   avatarImage: userToFollow.avatarImage,
-  //   name: userToFollow.name,
-  // };
 
-  user.following.push(userIdToFollow);
-  userToFollow.followers.push(userId);
+  user.following.push({ userId: userIdToFollow });
+  userToFollow.followers.push({ userId: userId });
 
   user = await user.save();
   userToFollow = await userToFollow.save();
@@ -175,40 +167,34 @@ const followUser = asyncHandler(async (req, res) => {
     .json({ success: true, user: user, userToFollow: userToFollow });
 });
 
-const unfollowUser = async (req, res) => {
+const unfollowUser = asyncHandler(async (req, res) => {
   const { userIdToUnFollow } = req.body;
-  const { userId } = req;
+  const { userId } = req.params;
 
-  try {
-    let userToUnFollow = await User.findById(userIdToUnFollow);
-    let user = await User.findById(userId);
-    if (!userToUnFollow || !user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Users not found" });
-    }
-
-    user.following = user.following.filter(
-      (item) => item.userId != userIdToUnFollow
-    );
-    userToUnFollow.followers = userToUnFollow.followers.filter(
-      (item) => item.userId != userId
-    );
-
-    user = await user.save();
-    userToUnFollow = await userToUnFollow.save();
-
-    res
-      .status(201)
-      .json({ success: true, user: user, userToUnFollow: userToUnFollow });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Couldn't retrieve data. Sorry!" });
+  let userToUnFollow = await User.findById(userIdToUnFollow).select(
+    "-__v -createdAt -updatedAt -password"
+  );
+  let user = await User.findById(userId).select(
+    "-__v -createdAt -updatedAt -password"
+  );
+  if (!userToUnFollow || !user) {
+    return res.status(400).json({ success: false, message: "Users not found" });
   }
-};
 
+  user.following = user.following.filter(
+    (item) => item.userId.toString() !== userIdToUnFollow
+  );
+  userToUnFollow.followers = userToUnFollow.followers.filter(
+    (item) => item.userId.toString() !== userId
+  );
+
+  user = await user.save();
+  userToUnFollow = await userToUnFollow.save();
+
+  res
+    .status(201)
+    .json({ success: true, user: user, userToUnFollow: userToUnFollow });
+});
 const searchByUserName = async (req, res) => {
   const { userName } = req.params;
   try {
