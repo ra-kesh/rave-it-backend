@@ -11,6 +11,7 @@ import {
   addComment,
   removeComment,
   removePost,
+  getFollowingPosts,
 } from "../controllers/postController.js";
 
 import { protect } from "../middlewares/authMiddleWare.js";
@@ -22,6 +23,8 @@ router
   .get(getAllPosts)
   .post(protect, addPost)
   .delete(protect, removePost);
+
+router.route("/feed").get(getFollowingPosts);
 
 router
   .route("/:postId/like")

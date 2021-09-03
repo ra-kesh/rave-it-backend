@@ -18,6 +18,7 @@ dotenv.config();
 
 // database;
 import connectDB from "./configs/db.js";
+import { protect } from "./middlewares/authMiddleWare.js";
 connectDB();
 
 //connecting main app
@@ -37,6 +38,7 @@ app.get("/", (req, res) => {
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 app.use("/notifications", notificationRoutes);
+app.use("/connection", protect, connectionRouter);
 
 // error Handellers
 app.use(notFoundMiddleware);

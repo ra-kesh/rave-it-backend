@@ -1,7 +1,6 @@
 import Post from "../models/postModel.js";
+import Follower from "../models/followerModel.js";
 import asyncHandler from "express-async-handler";
-
-// todo : to be refactored properly
 
 const getAllPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find({});
@@ -11,6 +10,21 @@ const getAllPosts = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Couldnot found any posts" });
   }
   res.status(200).json({ success: true, posts });
+});
+
+const getFollowingPosts = asyncHandler(async (req, res) => {
+  const followingUsers = await Follower.find({ user: req.uid }, "following");
+  const followingPosts = await Post.find({
+    user: { $in: [...followingUsers.map((obj) => obj.following), req.uid] },
+  })
+    .populate("user")
+    .limit(30)
+    .sort({ createdAt: -1 });
+
+  res.json({
+    success: true,
+    followingPosts: followingPosts,
+  });
 });
 
 const addPost = asyncHandler(async (req, res) => {
@@ -100,6 +114,7 @@ const removeComment = asyncHandler(async (req, res) => {
 
 export {
   getAllPosts,
+  getFollowingPosts,
   addPost,
   updateLike,
   removeLike,

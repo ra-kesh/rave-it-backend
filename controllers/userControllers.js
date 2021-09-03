@@ -43,8 +43,6 @@ const registerUser = asyncHandler(async (req, res) => {
       coverImage: savedUser.coverImage,
       bio: savedUser.bio,
       website: savedUser.website,
-      followers: savedUser.followers,
-      following: savedUser.following,
       token: generateToken(savedUser._id),
     });
   } else {
@@ -68,8 +66,6 @@ const loginUser = asyncHandler(async (req, res) => {
       coverImage: user.coverImage,
       bio: user.bio,
       website: user.website,
-      followers: user.followers,
-      following: user.following,
       token: generateToken(user._id),
     });
   } else {
@@ -104,8 +100,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
   if (user) {
     res.json({
-      // success: true,
-      // message: "User retrieved successfully",
       user,
     });
   } else {
@@ -139,8 +133,6 @@ const findUserById = asyncHandler(async (req, res, next, userId) => {
   req.user = foundUser;
   next();
 });
-
-// todo : to be refactored properly
 
 const followUser = asyncHandler(async (req, res) => {
   const { userId } = req.params;
@@ -195,6 +187,9 @@ const unfollowUser = asyncHandler(async (req, res) => {
     .status(201)
     .json({ success: true, user: user, userToUnFollow: userToUnFollow });
 });
+
+// todo : to be refactored properly
+
 const searchByUserName = async (req, res) => {
   const { userName } = req.params;
   try {
