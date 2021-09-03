@@ -143,10 +143,11 @@ const findUserById = asyncHandler(async (req, res, next, userId) => {
 // todo : to be refactored properly
 
 const followUser = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
   const { userIdToFollow } = req.body;
-  const { user } = req;
+  // const { user } = req;
   let userToFollow = await User.findById(userIdToFollow);
-  // let user = await User.findById(userId);
+  let user = await User.findById(userId);
   if (!userToFollow || !user) {
     return res.status(400).json({ success: false, message: "Users not found" });
   }
