@@ -59,7 +59,7 @@ export const unFollowUser = asyncHandler(async (req, res) => {
     following: followId,
   });
   const user = await User.findOneAndUpdate(
-    { user: req.uid },
+    { user: req.user._id },
     { $inc: { following: -1 } }
   );
   const follower = await User.findOneAndUpdate(

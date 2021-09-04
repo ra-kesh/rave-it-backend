@@ -8,14 +8,11 @@ import {
   unfollowUser,
   searchByUserName,
   getAllUsers,
-  findUserById,
 } from "../controllers/userControllers.js";
 
 import { protect } from "../middlewares/authMiddleWare.js";
 
 const router = express.Router();
-
-// router.param("userId", findUserById);
 
 router.post("/login", loginUser);
 router.post("/signup", registerUser);

@@ -13,9 +13,14 @@ const getAllPosts = asyncHandler(async (req, res) => {
 });
 
 const getFollowingPosts = asyncHandler(async (req, res) => {
-  const followingUsers = await Follower.find({ user: req.uid }, "following");
+  const followingUsers = await Follower.find(
+    { user: req.user._id },
+    "following"
+  );
   const followingPosts = await Post.find({
-    user: { $in: [...followingUsers.map((obj) => obj.following), req.uid] },
+    user: {
+      $in: [...followingUsers.map((obj) => obj.following), req.user._id],
+    },
   })
     .populate("user")
     .limit(30)
