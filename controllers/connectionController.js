@@ -38,11 +38,11 @@ export const FollowUser = asyncHandler(async (req, res) => {
     user: req.uid,
     following: followId,
   });
-  const user = await Profile.findOneAndUpdate(
+  const user = await User.findOneAndUpdate(
     { user: req.uid },
     { $inc: { following: 1 } }
   );
-  const follower = await Profile.findOneAndUpdate(
+  const follower = await User.findOneAndUpdate(
     { user: followId },
     { $inc: { followers: 1 } }
   );
@@ -58,11 +58,11 @@ export const unFollowUser = asyncHandler(async (req, res) => {
     user: req.uid,
     following: followId,
   });
-  const user = await Profile.findOneAndUpdate(
+  const user = await User.findOneAndUpdate(
     { user: req.uid },
     { $inc: { following: -1 } }
   );
-  const follower = await Profile.findOneAndUpdate(
+  const follower = await User.findOneAndUpdate(
     { user: followId },
     { $inc: { followers: -1 } }
   );

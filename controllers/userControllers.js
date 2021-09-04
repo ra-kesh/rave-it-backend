@@ -27,8 +27,8 @@ const registerUser = asyncHandler(async (req, res) => {
     coverImage: "",
     bio: "",
     website: "",
-    followers: [],
-    following: [],
+    followers: 0,
+    following: 0,
   });
 
   const savedUser = await newUser.save();
