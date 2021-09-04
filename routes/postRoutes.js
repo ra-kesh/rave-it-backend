@@ -24,7 +24,7 @@ router
   .post(protect, addPost)
   .delete(protect, removePost);
 
-router.route("/feed").get(getFollowingPosts);
+router.route("/feed").get(protect, getFollowingPosts);
 
 router
   .route("/:postId/like")

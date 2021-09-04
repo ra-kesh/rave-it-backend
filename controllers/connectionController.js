@@ -16,6 +16,8 @@ export const getAllConnections = asyncHandler(async (req, res) => {
     },
   }).limit(10);
 
+  //  todo: stop password from populating
+
   const followers = await Follower.find({ following: req.user._id }).populate(
     "user"
   );
