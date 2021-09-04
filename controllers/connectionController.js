@@ -3,8 +3,8 @@ import Follower from "../models/followerModel.js";
 import User from "../models/userModel.js";
 
 export const getAllConnections = asyncHandler(async (req, res) => {
-  const followingIds = await Follower.find({ user: req.uid }, "following");
-  const followerIds = await Follower.find({ following: req.uid }, "user");
+  const followingIds = await Follower.find({ user: req.user._id }, "following");
+  const followerIds = await Follower.find({ following: req.user._id }, "user");
 
   const suggestions = await User.find({
     _id: {
@@ -12,14 +12,14 @@ export const getAllConnections = asyncHandler(async (req, res) => {
         ...followingIds.map((obj) => obj.following),
         ...followerIds.map((obj) => obj.user),
       ],
-      $ne: req.uid,
+      $ne: req.user._id,
     },
   }).limit(10);
 
-  const followers = await Follower.find({ following: req.uid }).populate(
+  const followers = await Follower.find({ following: req.user._id }).populate(
     "user"
   );
-  const following = await Follower.find({ user: req.uid }).populate(
+  const following = await Follower.find({ user: req.user._id }).populate(
     "following"
   );
 
@@ -35,15 +35,15 @@ export const FollowUser = asyncHandler(async (req, res) => {
   const { followId } = req.body;
 
   const connection = await Follower.create({
-    user: req.uid,
+    user: req.user._id,
     following: followId,
   });
   const user = await User.findOneAndUpdate(
-    { user: req.uid },
+    { _id: req.user._id },
     { $inc: { following: 1 } }
   );
   const follower = await User.findOneAndUpdate(
-    { user: followId },
+    { _id: followId },
     { $inc: { followers: 1 } }
   );
 
@@ -55,7 +55,7 @@ export const FollowUser = asyncHandler(async (req, res) => {
 export const unFollowUser = asyncHandler(async (req, res) => {
   const { followId } = req.body;
   const connection = await Follower.deleteOne({
-    user: req.uid,
+    user: req.user._id,
     following: followId,
   });
   const user = await User.findOneAndUpdate(

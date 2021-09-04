@@ -19,8 +19,8 @@ const router = express.Router();
 
 router.post("/login", loginUser);
 router.post("/signup", registerUser);
-router.get("/profile/:_id", protect, getUserProfile);
-router.post("/profile/:_id", protect, updateUserProfile);
+router.get("/profile", protect, getUserProfile);
+router.post("/profile", protect, updateUserProfile);
 router.get("/", getAllUsers);
 
 router

@@ -93,10 +93,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 });
 
 const getUserProfile = asyncHandler(async (req, res) => {
-  const { _id } = req.params;
-  const user = await User.findById(_id).select(
-    "-__v -createdAt -updatedAt -password"
-  );
+  const user = await User.findById(req.user._id);
 
   if (user) {
     res.json({
@@ -109,16 +106,12 @@ const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const { _id } = req.params;
-  let user = await User.findById(_id).select(
-    "-__v -createdAt -updatedAt -password"
-  );
+  const user = await User.findById(req.user._id);
+
   let updatedUser = req.body;
   user = extend(user, updatedUser);
   user = await user.save();
   res.json({
-    // success: true,
-    // message: "User updated successfully",
     user,
   });
 });
