@@ -4,10 +4,10 @@ import {
   getAllConnections,
   unFollowUser,
 } from "../controllers/connectionController.js";
+import { protect } from "../middlewares/authMiddleWare.js";
 
 const router = express.Router();
 
-import { protect } from "./middlewares/authMiddleWare.js";
 router.get("/", protect, getAllConnections);
 
 router.post("/follow", protect, FollowUser);
