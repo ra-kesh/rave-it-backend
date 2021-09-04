@@ -3,7 +3,8 @@ import Follower from "../models/followerModel.js";
 import asyncHandler from "express-async-handler";
 
 const getAllPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({});
+  const posts = await Post.find({}).populate("postedBy", "-password");
+
   if (!posts) {
     return res
       .status(404)
@@ -18,11 +19,11 @@ const getFollowingPosts = asyncHandler(async (req, res) => {
     "following"
   );
   const followingPosts = await Post.find({
-    user: {
+    postedBy: {
       $in: [...followingUsers.map((obj) => obj.following), req.user._id],
     },
   })
-    .populate("user")
+    .populate("postedBy", "-password")
     .limit(30)
     .sort({ createdAt: -1 });
 

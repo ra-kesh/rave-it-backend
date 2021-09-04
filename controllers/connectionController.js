@@ -14,15 +14,17 @@ export const getAllConnections = asyncHandler(async (req, res) => {
       ],
       $ne: req.user._id,
     },
-  }).limit(10);
-
-  //  todo: stop password from populating
+  })
+    .select("-password")
+    .limit(10);
 
   const followers = await Follower.find({ following: req.user._id }).populate(
-    "user"
+    "user",
+    "-password"
   );
   const following = await Follower.find({ user: req.user._id }).populate(
-    "following"
+    "following",
+    "-password"
   );
 
   res.json({
