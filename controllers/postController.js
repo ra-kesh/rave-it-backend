@@ -24,8 +24,7 @@ const getFollowingPosts = asyncHandler(async (req, res) => {
     },
   })
     .populate("postedBy", "-password")
-    .limit(30)
-    .sort({ createdAt: -1 });
+    .limit(30);
 
   res.json({
     success: true,
