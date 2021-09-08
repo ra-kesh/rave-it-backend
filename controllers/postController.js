@@ -42,7 +42,7 @@ const addPost = asyncHandler(async (req, res) => {
     comments: [],
   });
 
-  const savePost = await newPost.save();
+  const savedPost = await newPost.save();
   savedPost.populate("postedBy", "-password");
   res.status(201).json({ success: true, post: savedPost });
 });
