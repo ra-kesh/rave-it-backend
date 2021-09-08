@@ -26,14 +26,8 @@ router
 
 router.route("/feed").get(protect, getFollowingPosts);
 
-router
-  .route("/:postId/like")
-  .post(protect, updateLike)
-  .delete(protect, removeLike);
-
-// router.post("/like", protect, updateLike);
-
-// router.route("/like").post(protect).delete(protect, removeLike);
+router.route("/like").post(protect, updateLike);
+router.route("/dislike").post(protect, removeLike);
 
 router
   .route("/:postId/comment")

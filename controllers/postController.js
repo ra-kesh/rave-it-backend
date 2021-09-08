@@ -33,18 +33,20 @@ const getFollowingPosts = asyncHandler(async (req, res) => {
 });
 
 const addPost = asyncHandler(async (req, res) => {
-  const { postedBy, content } = req.body;
+  const { content } = req.body;
 
-  const newPost = new Post({
-    postedBy,
-    content,
+  const newPost = await Post.create({
+    postedBy: req.user._id,
+    content: content,
     likes: [],
     comments: [],
   });
 
-  const savedPost = await newPost.save();
-  savedPost.populate("postedBy", "-password");
-  res.status(201).json({ success: true, post: savedPost });
+  const populatedPost = await newPost
+    .populate("postedBy", "-password")
+    .execPopulate();
+
+  res.status(201).json({ success: true, post: populatedPost });
 });
 
 const removePost = asyncHandler(async (req, res) => {
@@ -73,32 +75,25 @@ const findPostById = asyncHandler(async (req, res, next, postId) => {
 });
 
 const updateLike = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
-  const { post } = req;
-  post.likes.push({ userId: userId });
-  await post.save();
-  const updatedPost = post.populate("postedBy", "-password");
+  const { postId } = req.body;
+  const foundPost = await Post.findById(postId);
+  foundPost.likes.push({ userId: req.user._id });
+  await foundPost.save();
+  const updatedPost = await foundPost
+    .populate("postedBy", "-password")
+    .execPopulate();
   res.status(201).json({ success: true, post: updatedPost });
 });
 
-// const updateLike = asyncHandler(async (req, res) => {
-//   const { postId } = req.body;
-//   const post = await Post.findOneAndUpdate(
-//     { _id: postId },
-//     { $push: { likes: req.user._id } },
-//     { upsert: true }
-//   );
-//   const updatedPost = post.populate("postedBy", "-password");
-
-//   res.status(201).json({ success: true, post: updatedPost });
-// });
-
 const removeLike = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
-  const { post } = req;
+  const { postId, userId } = req.body;
+  const post = await Post.findById(postId);
   post.likes = post.likes.filter((item) => item.userId.toString() !== userId);
   await post.save();
-  res.status(200).json({ success: true, post: post });
+  const updatedPost = await post
+    .populate("postedBy", "-password")
+    .execPopulate();
+  res.status(200).json({ success: true, post: updatedPost });
 });
 
 const addComment = asyncHandler(async (req, res) => {
