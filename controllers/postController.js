@@ -44,7 +44,7 @@ const addPost = asyncHandler(async (req, res) => {
 
   const savePost = await newPost.save();
   savedPost.populate("postedBy", "-password");
-  res.status(201).json({ success: true, post: savePost });
+  res.status(201).json({ success: true, post: savedPost });
 });
 
 const removePost = asyncHandler(async (req, res) => {
