@@ -31,6 +31,10 @@ router
   .post(protect, updateLike)
   .delete(protect, removeLike);
 
+// router.post("/like", protect, updateLike);
+
+// router.route("/like").post(protect).delete(protect, removeLike);
+
 router
   .route("/:postId/comment")
   .post(protect, addComment)

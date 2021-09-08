@@ -43,6 +43,7 @@ const addPost = asyncHandler(async (req, res) => {
   });
 
   const savePost = await newPost.save();
+  savedPost.populate("postedBy", "-password");
   res.status(201).json({ success: true, post: savePost });
 });
 
@@ -75,9 +76,22 @@ const updateLike = asyncHandler(async (req, res) => {
   const { userId } = req.body;
   const { post } = req;
   post.likes.push({ userId: userId });
-  post.save();
-  res.status(201).json({ success: true, post: post });
+  await post.save();
+  const updatedPost = post.populate("postedBy", "-password");
+  res.status(201).json({ success: true, post: updatedPost });
 });
+
+// const updateLike = asyncHandler(async (req, res) => {
+//   const { postId } = req.body;
+//   const post = await Post.findOneAndUpdate(
+//     { _id: postId },
+//     { $push: { likes: req.user._id } },
+//     { upsert: true }
+//   );
+//   const updatedPost = post.populate("postedBy", "-password");
+
+//   res.status(201).json({ success: true, post: updatedPost });
+// });
 
 const removeLike = asyncHandler(async (req, res) => {
   const { userId } = req.body;
