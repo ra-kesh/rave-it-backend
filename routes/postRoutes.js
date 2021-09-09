@@ -37,9 +37,4 @@ router
   .post(protect, addComment)
   .delete(protect, removeComment);
 
-// router
-//   .route("/:postId/comment")
-//   .post(protect, addComment)
-//   .delete(protect, removeComment);
-
 export default router;

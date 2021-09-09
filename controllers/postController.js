@@ -3,7 +3,15 @@ import Follower from "../models/followerModel.js";
 import asyncHandler from "express-async-handler";
 
 const getAllPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({}).populate("postedBy", "-password");
+  const posts = await Post.find({})
+    .populate([
+      {
+        path: "postedBy likes.user comments.user",
+        model: "User",
+        select: ["_id,", "name", "userName", "avatarImage"],
+      },
+    ])
+    .execPopulate();
 
   if (!posts) {
     return res
@@ -23,7 +31,14 @@ const getFollowingPosts = asyncHandler(async (req, res) => {
       $in: [...followingUsers.map((obj) => obj.following), req.user._id],
     },
   })
-    .populate("postedBy", "-password")
+    .populate([
+      {
+        path: "postedBy likes.user comments.user",
+        model: "User",
+        select: ["_id,", "name", "userName", "avatarImage"],
+      },
+    ])
+    .execPopulate()
     .limit(30);
 
   res.json({
@@ -43,7 +58,13 @@ const addPost = asyncHandler(async (req, res) => {
   });
 
   const populatedPost = await newPost
-    .populate("postedBy", "-password")
+    .populate([
+      {
+        path: "postedBy likes.user comments.user",
+        model: "User",
+        select: ["_id,", "name", "userName", "avatarImage"],
+      },
+    ])
     .execPopulate();
 
   res.status(201).json({ success: true, post: populatedPost });
