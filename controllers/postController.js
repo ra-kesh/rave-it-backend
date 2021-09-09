@@ -3,15 +3,13 @@ import Follower from "../models/followerModel.js";
 import asyncHandler from "express-async-handler";
 
 const getAllPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({})
-    .populate([
-      {
-        path: "postedBy likes.user comments.user",
-        model: "User",
-        select: ["_id,", "name", "userName", "avatarImage"],
-      },
-    ])
-    .execPopulate();
+  const posts = await Post.find({}).populate([
+    {
+      path: "postedBy likes.user comments.user",
+      model: "User",
+      select: ["_id,", "name", "userName", "avatarImage"],
+    },
+  ]);
 
   if (!posts) {
     return res
@@ -38,7 +36,6 @@ const getFollowingPosts = asyncHandler(async (req, res) => {
         select: ["_id,", "name", "userName", "avatarImage"],
       },
     ])
-    .execPopulate()
     .limit(30);
 
   res.json({
