@@ -70,17 +70,41 @@ const findPostById = asyncHandler(async (req, res, next, postId) => {
       .status(404)
       .json({ success: false, message: "Post not found. Sorry!" });
   }
-  req.post = foundPost;
+  const populatedPost = await foundPost
+    .populate([
+      {
+        path: "postedBy likes.user comments.user",
+        model: "User",
+        select: ["_id,", "name", "userName", "avatarImage"],
+      },
+    ])
+    .execPopulate();
+  req.post = populatedPost;
   next();
+});
+
+const fetchSinglePost = asyncHandler(async (req, res) => {
+  let { post } = req;
+
+  res.status(200).json({
+    success: true,
+    post: post,
+  });
 });
 
 const updateLike = asyncHandler(async (req, res) => {
   const { postId } = req.body;
-  const foundPost = await Post.findById(postId);
-  foundPost.likes.push({ userId: req.user._id });
-  await foundPost.save();
-  const updatedPost = await foundPost
-    .populate("postedBy", "-password")
+  const post = await Post.findById(postId);
+  post.likes.push({ user: req.user._id });
+  await post.save();
+  const updatedPost = await post
+    .populate([
+      {
+        path: "postedBy likes.user comments.user",
+        model: "User",
+        select: ["_id,", "name", "userName", "avatarImage"],
+      },
+    ])
     .execPopulate();
   res.status(201).json({ success: true, post: updatedPost });
 });
@@ -88,29 +112,46 @@ const updateLike = asyncHandler(async (req, res) => {
 const removeLike = asyncHandler(async (req, res) => {
   const { postId, userId } = req.body;
   const post = await Post.findById(postId);
-  post.likes = post.likes.filter((item) => item.userId.toString() !== userId);
+  post.likes = post.likes.filter((item) => item.user.toString() !== userId);
   await post.save();
   const updatedPost = await post
-    .populate("postedBy", "-password")
+    .populate([
+      {
+        path: "postedBy likes.user comments.user",
+        model: "User",
+        select: ["_id,", "name", "userName", "avatarImage"],
+      },
+    ])
     .execPopulate();
   res.status(200).json({ success: true, post: updatedPost });
 });
 
 const addComment = asyncHandler(async (req, res) => {
-  const { userId, text } = req.body;
-  const { post } = req;
+  const { postId, text } = req.body;
+  const post = await Post.findById(postId);
   post.comments.push({
-    userId,
+    user: req.user._id,
     text,
     createdAt: new Date().toISOString(),
   });
-  post.save();
-  res.status(201).json({ success: true, post: post });
+  await post.save();
+
+  const updatedPost = await post
+    .populate([
+      {
+        path: "postedBy likes.user comments.user",
+        model: "User",
+        select: ["_id,", "name", "userName", "avatarImage"],
+      },
+    ])
+    .execPopulate();
+
+  res.status(201).json({ success: true, post: updatedPost });
 });
 
 const removeComment = asyncHandler(async (req, res) => {
-  const { commentId } = req.body;
-  const { post } = req;
+  const { postId, commentId } = req.body;
+  const post = await Post.findById(postId);
   const foundComment = post.comments.find(
     (item) => item._id.toString() === commentId
   );
@@ -122,13 +163,23 @@ const removeComment = asyncHandler(async (req, res) => {
   post.comments = post.comments.filter(
     (item) => item._id.toString() !== commentId
   );
-  post.save();
-  res.status(200).json({ success: true, post: post });
+  await post.save();
+  const updatedPost = await post
+    .populate([
+      {
+        path: "postedBy likes.user comments.user",
+        model: "User",
+        select: ["_id,", "name", "userName", "avatarImage"],
+      },
+    ])
+    .execPopulate();
+  res.status(200).json({ success: true, post: updatedPost });
 });
 
 export {
   getAllPosts,
   getFollowingPosts,
+  fetchSinglePost,
   addPost,
   updateLike,
   removeLike,

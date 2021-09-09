@@ -12,11 +12,14 @@ import {
   removeComment,
   removePost,
   getFollowingPosts,
+  fetchSinglePost,
 } from "../controllers/postController.js";
 
 import { protect } from "../middlewares/authMiddleWare.js";
 
 router.param("postId", findPostById);
+
+router.route("/:postId").get(fetchSinglePost);
 
 router
   .route("/")
@@ -30,8 +33,13 @@ router.route("/like").post(protect, updateLike);
 router.route("/dislike").post(protect, removeLike);
 
 router
-  .route("/:postId/comment")
+  .route("/comment")
   .post(protect, addComment)
   .delete(protect, removeComment);
+
+// router
+//   .route("/:postId/comment")
+//   .post(protect, addComment)
+//   .delete(protect, removeComment);
 
 export default router;
