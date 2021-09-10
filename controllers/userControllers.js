@@ -25,7 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email: email,
     password: password,
     userName: userName,
-    avatarImage: `https://avatars.dicebear.com/api/croodles/${userList.length}.svg?&scale=170`,
+    avatarImage: `https://avatars.dicebear.com/api/croodles/${userList.length}.svg`,
     coverImage: `https://avatars.dicebear.com/api/croodles/${userList.length}.svg`,
     bio: "",
     website: "",
