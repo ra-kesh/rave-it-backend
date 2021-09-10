@@ -19,7 +19,32 @@ const getAllPosts = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, posts });
 });
 
+const getOwnPosts = asyncHandler(async (req, res) => {
+  const posts = await Post.find({ postedBy: req.user._id })
+    .populate([
+      {
+        path: "postedBy likes.user comments.user",
+        model: "User",
+        select: ["_id,", "name", "userName", "avatarImage"],
+      },
+    ])
+    .sort({ createdAt: -1 });
+
+  res.json({
+    success: true,
+    ownPosts: posts,
+  });
+});
+
 const getFollowingPosts = asyncHandler(async (req, res) => {
+  // let followingUsers = await Follower.find({ user: req.user._id }).populate([
+  //   {
+  //     path: "following",
+  //     model: "User",
+  //     select: ["_id", "name", "userName", "avatarImage"],
+  //   },
+  // ]);
+
   const followingUsers = await Follower.find(
     { user: req.user._id },
     "following"
@@ -205,4 +230,5 @@ export {
   addComment,
   removeComment,
   removePost,
+  getOwnPosts,
 };

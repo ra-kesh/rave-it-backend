@@ -13,6 +13,7 @@ import {
   removePost,
   getFollowingPosts,
   fetchSinglePost,
+  getOwnPosts,
 } from "../controllers/postController.js";
 
 import { protect } from "../middlewares/authMiddleWare.js";
@@ -27,7 +28,8 @@ router
   .post(protect, addPost)
   .delete(protect, removePost);
 
-router.route("/feed").get(protect, getFollowingPosts);
+router.route("/feed/personal").get(protect, getFollowingPosts);
+router.route("/feed/own").get(protect, getOwnPosts);
 
 router.route("/like").post(protect, updateLike);
 router.route("/dislike").post(protect, removeLike);
