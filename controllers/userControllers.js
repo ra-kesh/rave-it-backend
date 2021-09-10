@@ -7,6 +7,8 @@ const { extend } = pkg;
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, userName, password } = req.body;
 
+  const userList = await User.find({});
+
   const emailExists = await User.findOne({ email });
   const usernameExists = await User.findOne({ userName });
 
@@ -23,8 +25,8 @@ const registerUser = asyncHandler(async (req, res) => {
     email: email,
     password: password,
     userName: userName,
-    avatarImage: "",
-    coverImage: "",
+    avatarImage: `https://avatars.dicebear.com/api/croodles/${userList.length}.svg?&scale=170`,
+    coverImage: `https://avatars.dicebear.com/api/croodles/${userList.length}.svg`,
     bio: "",
     website: "",
     followers: 0,
