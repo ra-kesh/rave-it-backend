@@ -129,6 +129,15 @@ const findUserById = asyncHandler(async (req, res, next, userId) => {
   next();
 });
 
+const getSingleUser = asyncHandler(async (req, res) => {
+  let { user } = req;
+
+  res.status(200).json({
+    success: true,
+    user: user,
+  });
+});
+
 const followUser = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const { userIdToFollow } = req.body;
@@ -213,4 +222,5 @@ export {
   unfollowUser,
   searchByUserName,
   findUserById,
+  getSingleUser,
 };
