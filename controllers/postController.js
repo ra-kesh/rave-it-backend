@@ -19,8 +19,9 @@ const getAllPosts = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, posts });
 });
 
-const getOwnPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({ postedBy: req.user._id })
+const getUserPosts = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const posts = await Post.find({ postedBy: userId })
     .populate([
       {
         path: "postedBy likes.user comments.user",
@@ -32,7 +33,7 @@ const getOwnPosts = asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    ownPosts: posts,
+    userPosts: posts,
   });
 });
 
@@ -230,5 +231,5 @@ export {
   addComment,
   removeComment,
   removePost,
-  getOwnPosts,
+  getUserPosts,
 };
