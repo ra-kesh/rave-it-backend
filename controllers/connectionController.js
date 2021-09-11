@@ -15,16 +15,49 @@ export const getAllConnections = asyncHandler(async (req, res) => {
       $ne: req.user._id,
     },
   })
-    .select("-password")
+    .select(["_id,", "name", "userName", "avatarImage"])
     .limit(10);
 
   const followers = await Follower.find({ following: req.user._id }).populate(
     "user",
-    "-password"
+    ["_id,", "name", "userName", "avatarImage"]
   );
   const following = await Follower.find({ user: req.user._id }).populate(
     "following",
-    "-password"
+    ["_id,", "name", "userName", "avatarImage"]
+  );
+
+  res.json({
+    success: true,
+    following: following.map((obj) => obj.following),
+    followers: followers.map((obj) => obj.user),
+    suggestions: suggestions,
+  });
+});
+export const getUserConnections = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const followingIds = await Follower.find({ user: userId }, "following");
+  const followerIds = await Follower.find({ following: userId }, "user");
+
+  const suggestions = await User.find({
+    _id: {
+      $nin: [
+        ...followingIds.map((obj) => obj.following),
+        ...followerIds.map((obj) => obj.user),
+      ],
+      $ne: userId,
+    },
+  })
+    .select(["_id,", "name", "userName", "avatarImage"])
+    .limit(10);
+
+  const followers = await Follower.find({ following: userId }).populate(
+    "user",
+    ["_id,", "name", "userName", "avatarImage"]
+  );
+  const following = await Follower.find({ user: userId }).populate(
+    "following",
+    ["_id,", "name", "userName", "avatarImage"]
   );
 
   res.json({
