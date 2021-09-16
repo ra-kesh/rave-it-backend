@@ -27,7 +27,8 @@ const registerUser = asyncHandler(async (req, res) => {
     userName: userName,
     avatarImage: `https://avatars.dicebear.com/api/croodles/${userList.length}.svg`,
     coverImage: `https://avatars.dicebear.com/api/croodles/${userList.length}.svg`,
-    bio: "",
+    bio: "Here to Rave..",
+    location: "Planet Earth",
     website: "",
     followers: 0,
     following: 0,
@@ -44,6 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
       avatarImage: savedUser.avatarImage,
       coverImage: savedUser.coverImage,
       bio: savedUser.bio,
+      location: savedUser.location,
       website: savedUser.website,
       token: generateToken(savedUser._id),
     });
