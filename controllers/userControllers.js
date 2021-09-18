@@ -70,6 +70,7 @@ const loginUser = asyncHandler(async (req, res) => {
       coverImage: user.coverImage,
       bio: user.bio,
       website: user.website,
+      location: user.location,
       token: generateToken(user._id),
     });
   } else {
@@ -110,7 +111,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  let user = await User.findById(req.user._id);
 
   let updatedUser = req.body;
   user = extend(user, updatedUser);
