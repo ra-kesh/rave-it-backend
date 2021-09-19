@@ -117,7 +117,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   user = extend(user, updatedUser);
   user = await user.save();
   res.json({
-    user,
+    userInfo: user,
   });
 });
 
