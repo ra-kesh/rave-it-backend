@@ -4,7 +4,7 @@
 
 
 
-<h1 align="center">Rave - Frontend</h1>
+<h1 align="center">Rave - Backend</h1>
 
 <br/>
 
